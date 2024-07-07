@@ -110,7 +110,7 @@ class Dialog
         return $this;
     }
 
-    public function asSheet(string $windowId = null): self
+    public function asSheet(?string $windowId = null): self
     {
         if (is_null($windowId)) {
             $this->windowReference = Window::current()->id;
@@ -123,14 +123,7 @@ class Dialog
 
     public function open()
     {
-        $result = $this->client->post('dialog/open', [
-            'title' => $this->title,
-            'windowReference' => $this->windowReference,
-            'defaultPath' => $this->defaultPath,
-            'filters' => $this->filters,
-            'buttonLabel' => $this->buttonLabel,
-            'properties' => array_unique($this->properties),
-        ])->json('result');
+        $result = $this->client->post('dialog/open', $this->dialogData())->json('result');
 
         if (! in_array('multiSelections', $this->properties)) {
             return $result[0] ?? null;
@@ -141,13 +134,18 @@ class Dialog
 
     public function save()
     {
-        return $this->client->post('dialog/save', [
+        return $this->client->post('dialog/save', $this->dialogData())->json('result');
+    }
+
+    public function dialogData(): array
+    {
+        return [
             'title' => $this->title,
             'windowReference' => $this->windowReference,
             'defaultPath' => $this->defaultPath,
             'filters' => $this->filters,
             'buttonLabel' => $this->buttonLabel,
             'properties' => array_unique($this->properties),
-        ])->json('result');
+        ];
     }
 }

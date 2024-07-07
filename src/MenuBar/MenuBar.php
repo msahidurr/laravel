@@ -4,19 +4,23 @@ namespace Native\Laravel\MenuBar;
 
 use Native\Laravel\Client\Client;
 use Native\Laravel\Concerns\HasDimensions;
+use Native\Laravel\Concerns\HasPositioner;
 use Native\Laravel\Concerns\HasUrl;
 use Native\Laravel\Concerns\HasVibrancy;
 use Native\Laravel\Menu\Menu;
 
 class MenuBar
 {
-    use HasVibrancy;
     use HasDimensions;
+    use HasPositioner;
     use HasUrl;
+    use HasVibrancy;
 
     protected string $icon = '';
 
     protected string $label = '';
+
+    protected bool $onlyShowContextWindow = false;
 
     protected ?Menu $contextMenu = null;
 
@@ -41,6 +45,13 @@ class MenuBar
     public function icon(string $icon): self
     {
         $this->icon = $icon;
+
+        return $this;
+    }
+
+    public function onlyShowContextMenu(bool $onlyContextMenu = true): self
+    {
+        $this->onlyShowContextWindow = $onlyContextMenu;
 
         return $this;
     }
@@ -85,6 +96,7 @@ class MenuBar
         return [
             'url' => $this->url,
             'icon' => $this->icon,
+            'windowPosition' => $this->windowPosition,
             'x' => $this->x,
             'y' => $this->y,
             'label' => $this->label,
@@ -94,6 +106,7 @@ class MenuBar
             'showDockIcon' => $this->showDockIcon,
             'transparency' => $this->transparent,
             'backgroundColor' => $this->backgroundColor,
+            'onlyShowContextWindow' => $this->onlyShowContextWindow,
             'contextMenu' => ! is_null($this->contextMenu) ? $this->contextMenu->toArray()['submenu'] : null,
             'alwaysOnTop' => $this->alwaysOnTop,
         ];

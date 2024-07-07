@@ -9,9 +9,15 @@ use Native\Laravel\Concerns\HasVibrancy;
 
 class Window
 {
-    use HasVibrancy;
     use HasDimensions;
     use HasUrl;
+    use HasVibrancy;
+
+    protected bool $autoHideMenuBar = false;
+
+    protected bool $fullscreen = false;
+
+    protected bool $kiosk = false;
 
     protected $rememberState = false;
 
@@ -36,6 +42,8 @@ class Window
     protected bool $frame = true;
 
     protected string $titleBarStyle = 'default';
+
+    protected array $trafficLightPosition = [];
 
     protected string $title = '';
 
@@ -80,6 +88,13 @@ class Window
     public function titleBarHiddenInset(): self
     {
         return $this->titleBarStyle('hiddenInset');
+    }
+
+    public function trafficLightPosition(int $x, int $y): self
+    {
+        $this->trafficLightPosition = ['x' => $x, 'y' => $y];
+
+        return $this;
     }
 
     public function rememberState(): self
@@ -180,6 +195,27 @@ class Window
             ->hasShadow(false);
     }
 
+    public function hideMenu($autoHideMenuBar = true): static
+    {
+        $this->autoHideMenuBar = $autoHideMenuBar;
+
+        return $this;
+    }
+
+    public function fullscreen($fullscreen = false): static
+    {
+        $this->fullscreen = $fullscreen;
+
+        return $this;
+    }
+
+    public function kiosk($kiosk = false): static
+    {
+        $this->kiosk = $kiosk;
+
+        return $this;
+    }
+
     public function toArray()
     {
         return [
@@ -198,6 +234,7 @@ class Window
             'hasShadow' => $this->hasShadow,
             'frame' => $this->frame,
             'titleBarStyle' => $this->titleBarStyle,
+            'trafficLightPosition' => $this->trafficLightPosition,
             'showDevTools' => $this->showDevTools,
             'vibrancy' => $this->vibrancy,
             'transparency' => $this->transparent,
@@ -209,6 +246,9 @@ class Window
             'maximizable' => $this->maximizable,
             'closable' => $this->closable,
             'title' => $this->title,
+            'fullscreen' => $this->fullscreen,
+            'kiosk' => $this->kiosk,
+            'autoHideMenuBar' => $this->autoHideMenuBar,
         ];
     }
 }
